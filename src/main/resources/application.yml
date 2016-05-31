@@ -1,9 +1,9 @@
 mw:
   db:
-    url: jdbc:mysql://rds2quvfa2quvfapublic.mysql.rds.aliyuncs.com:3306
-    username: sul
-    password: mW123456
-    driver: com.mysql.jdbc.Driver
+    url: xxxx
+    username: xxxx
+    password: xxxx
+    driver: xxxx
 
 server:
   port: 18080
