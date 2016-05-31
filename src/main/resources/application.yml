@@ -1,0 +1,13 @@
+mw:
+  db:
+    url: jdbc:mysql://rds2quvfa2quvfapublic.mysql.rds.aliyuncs.com:3306
+    username: sul
+    password: mW123456
+    driver: com.mysql.jdbc.Driver
+
+server:
+  port: 18080
+  
+mybatis:
+  configLocation: classpath:mybatis.xml
+  mapperLocations: classpath*:mappers/*.xml
