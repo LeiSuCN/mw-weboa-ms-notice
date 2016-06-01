@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.mailworld.weboa.ms.notice.domain.NoticeDao">
+
+  <resultMap type="com.mailworld.weboa.ms.notice.domain.Notice" id="Notice">
+    <id property="id" column="id"/>
+    <result property="title" column="title"/>
+    <result property="create" column="create" typeHandler="com.mailworld.weboa.ms.notice.domain.LongSqlTimestampTypeHandler"/>
+  </resultMap>
+  
+  <resultMap type="com.mailworld.weboa.ms.notice.domain.NoticeInfo" id="NoticeInfo">
+    <id property="id" column="id"/>
+    <association property="notice" javaType="com.mailworld.weboa.ms.notice.domain.Notice">
+      <id property="id" column="id"/>
+      <result property="title" column="title"/>
+      <result property="create" column="create" typeHandler="com.mailworld.weboa.ms.notice.domain.LongSqlTimestampTypeHandler"/>
+    </association>
+    <association property="content" javaType="com.mailworld.weboa.ms.notice.domain.NoticeItem">
+      <id property="id" column="content_id"/>
+      <result property="noticeId" column="content_notice_id"/>
+      <result property="value" column="content_value" />
+      <result property="create" column="content_create" typeHandler="com.mailworld.weboa.ms.notice.domain.LongSqlTimestampTypeHandler"/>
+      <result property="delete" column="content_delete"/>
+    </association>
+    <collection property="attachments" ofType="com.mailworld.weboa.ms.notice.domain.NoticeItem">
+      <id property="id" column="attachment_id"/>
+      <result property="noticeId" column="attachment_notice_id"/>
+      <result property="value" column="attachment_value" />
+      <result property="create" column="attachment_create" typeHandler="com.mailworld.weboa.ms.notice.domain.LongSqlTimestampTypeHandler"/>
+      <result property="delete" column="attachment_delete"/>    
+    </collection>
+  </resultMap>
+
+  <resultMap id="Receiver" type="com.mailworld.weboa.ms.notice.domain.NoticeItem">
+    <result property="id" column="receiver"/>
+    <result property="noticeId" column="notice_id"/>
+    <result property="value" column="receiver_type" />
+    <result property="create" column="create" typeHandler="com.mailworld.weboa.ms.notice.domain.LongSqlTimestampTypeHandler"/>
+    <result property="delete" column="delete"/>
+  </resultMap>
+
+  <select id="queryByDepartment" resultMap="Notice">
+    select
+      *
+    from
+      mwoa_notice.notice
+  </select>
+  
+  <select id="getInfoById" resultMap="NoticeInfo">
+SELECT 
+    n.*,
+    c.id as content_id,
+    c.notice_id as content_notice_id,
+    c.content as content_value,
+    c.`create` as content_create,
+    c.`delete` as content_delete,
+    a.id as attachment_id,
+    a.notice_id as attachment_notice_id,
+    a.link as attachment_value,
+    a.`create` as attachment_create,
+    a.`delete` as attachment_delete
+FROM
+    mwoa_notice.notice n
+        LEFT JOIN
+    mwoa_notice.notice_content c ON n.id = c.notice_id
+        LEFT JOIN
+    mwoa_notice.notice_attachment a ON n.id = a.notice_id
+where 
+    n.id = #{param0}
+  </select>
+  <select id="queryReceiversByNoticeId" resultMap="Receiver">
+    select
+      *
+    from
+      mwoa_notice.notice_receiver
+  </select>
+    
+  <insert id="saveNotice" useGeneratedKeys="true" keyProperty="id">
+    insert into mwoa_notice.notice
+      (title, author, category, type, validity)
+    values
+      (#{title},#{author},#{category},#{type},#{validity})
+  </insert>
+   
+</mapper>
