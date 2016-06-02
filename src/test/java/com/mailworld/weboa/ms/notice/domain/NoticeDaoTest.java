@@ -71,8 +71,8 @@ public class NoticeDaoTest {
 			fail(e.getMessage());
 			this.txManager.rollback(status);
 		}
-		//this.txManager.rollback(status);
-		this.txManager.commit(status);
+		this.txManager.rollback(status);
+		//this.txManager.commit(status);
 		
 	}
 

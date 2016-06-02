@@ -49,6 +49,13 @@
       <version>1.1.1</version>
     </dependency>
     
+    <!-- LIB -->
+    <dependency>
+     <groupId>com.google.guava</groupId>
+     <artifactId>guava</artifactId>
+     <version>19.0</version>
+    </dependency>
+        
     <!-- LOG -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

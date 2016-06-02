@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.google.common.eventbus.EventBus;
+
 @Configuration
 public class NoticeConfigration {
 	
@@ -33,5 +35,11 @@ public class NoticeConfigration {
 		ds.setPoolPingEnabled(true);
 		ds.setPoolPingQuery("select 1");
 		return ds;
+	}
+	
+	@Bean
+	public EventBus getNoticeEventBus(){
+		EventBus eb = new EventBus("eb-notice");
+		return eb;
 	}
 }
