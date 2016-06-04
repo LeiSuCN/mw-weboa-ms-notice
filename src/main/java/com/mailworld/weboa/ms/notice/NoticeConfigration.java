@@ -39,7 +39,7 @@ public class NoticeConfigration {
 	
 	@Bean
 	public EventBus getNoticeEventBus(){
-		EventBus eb = new EventBus("eb-notice");
+		EventBus eb = new EventBus("eb-notice");		
 		return eb;
 	}
 }

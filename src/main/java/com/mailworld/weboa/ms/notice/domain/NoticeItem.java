@@ -11,6 +11,8 @@ public class NoticeItem {
 	private long create;
 	
 	private int delete;
+	
+	private String name;
 
 	public int getId() {
 		return id;
@@ -50,5 +52,13 @@ public class NoticeItem {
 
 	public void setNoticeId(int noticeId) {
 		this.noticeId = noticeId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

@@ -28,15 +28,17 @@
       <id property="id" column="attachment_id"/>
       <result property="noticeId" column="attachment_notice_id"/>
       <result property="value" column="attachment_value" />
+      <result property="name" column="attachment_name" />
       <result property="create" column="attachment_create" typeHandler="com.mailworld.weboa.ms.notice.domain.LongSqlTimestampTypeHandler"/>
       <result property="delete" column="attachment_delete"/>    
     </collection>
   </resultMap>
 
   <resultMap id="Receiver" type="com.mailworld.weboa.ms.notice.domain.NoticeItem">
-    <result property="id" column="receiver"/>
+    <result property="id" column="id"/>
     <result property="noticeId" column="notice_id"/>
-    <result property="value" column="receiver_type" />
+    <result property="value" column="receiver"/>
+    <result property="name" column="receiver_type" />
     <result property="create" column="create" typeHandler="com.mailworld.weboa.ms.notice.domain.LongSqlTimestampTypeHandler"/>
     <result property="delete" column="delete"/>
   </resultMap>
@@ -59,6 +61,7 @@ SELECT
     a.id as attachment_id,
     a.notice_id as attachment_notice_id,
     a.link as attachment_value,
+    a.name as attachment_name,
     a.`create` as attachment_create,
     a.`delete` as attachment_delete
 FROM
@@ -76,6 +79,26 @@ where
     from
       mwoa_notice.notice_receiver
   </select>
+  
+<insert id="saveReadRecord">
+insert into 
+  mwoa_notice.notice_read(notice_id, receiver_id) 
+select 
+  #{param1}, #{param2}
+from 
+  dual 
+where not exists 
+  ( select notice_id from mwoa_notice.notice_read i where i.notice_id = #{param1} and i.receiver_id = #{param2} and i.delete = 0 )  
+</insert>
+
+<update id="incrementNoticeRead">
+update
+  mwoa_notice.notice_statistics
+set 
+  `read` = `read` + 1
+where 
+  notice_id = #{param1}
+</update>
     
   <insert id="saveNotice" useGeneratedKeys="true" keyProperty="id">
     insert into mwoa_notice.notice
@@ -83,5 +106,37 @@ where
     values
       (#{title},#{author},#{category},#{type},#{validity})
   </insert>
+
+<insert id="saveNoticeContent" useGeneratedKeys="true" keyProperty="id">
+  insert into mwoa_notice.notice_content
+    (notice_id, content)
+  values
+    (#{noticeId}, #{value})
+</insert>
+ 
+<insert id="saveNoticeAttachments" useGeneratedKeys="true" keyProperty="id">
+  insert into mwoa_notice.notice_attachment
+    (notice_id, link, name)
+  values
+  <foreach item="item" collection="list" separator=",">
+    (#{item.noticeId}, #{item.value}, #{item.name})
+  </foreach>
+</insert>
+
+<insert id="saveNoticeReceivers" useGeneratedKeys="true" keyProperty="id">
+  insert into mwoa_notice.notice_receiver
+    (notice_id, receiver, receiver_type)
+  values
+  <foreach item="item" collection="list" separator=",">
+    (#{item.noticeId}, #{item.value}, #{item.name})
+  </foreach>
+</insert>
+  
+<insert id="saveNoticeStatistics">
+  insert into mwoa_notice.notice_statistics
+    (notice_id)
+  values
+    (#{param1})
+</insert>
    
 </mapper>
