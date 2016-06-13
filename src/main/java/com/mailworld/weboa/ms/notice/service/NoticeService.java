@@ -49,18 +49,20 @@ public class NoticeService {
 			noticeDao.saveNotice(notice);
 			int noticeId = notice.getId();
 			if( noticeId > 0 ){
+				info.setId(String.valueOf(noticeId));
+				// 保存附件
 				List<NoticeItem> attachments = info.getAttachments();
 				if( null != attachments && attachments.size() > 0){
 					attachments.forEach( attachment -> attachment.setNoticeId(noticeId) );
 					noticeDao.saveNoticeAttachments(attachments);
 				}
-				
+				// 保存内容
 				NoticeItem content = info.getContent();
 				if( null != content ){
 					content.setNoticeId(noticeId);
 					noticeDao.saveNoticeContent(content);
 				}
-				
+				// 保存接收者
 				List<NoticeItem> receivers = info.getReceivers();
 				if( null != receivers && receivers.size() > 0){
 					receivers.forEach( item -> item.setNoticeId(noticeId) );
